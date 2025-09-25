@@ -408,6 +408,17 @@
             <p class="score-message">VOUCHER</p>
         </div>
     </div>
+        <!-- Incorrect Score -->
+    <div id="incorrectScoreContainer" class="score-page hidden">
+        <div class="score-content">
+            <h1 class="score-title" style="color: red;">BETTER LUCK NEXT TIME!</h1>
+            <p class="score-message">YOU GOT 0 OUT OF 3</p>
+            <p class="score-message" style="font-weight: bold; color: #ff4d4d;">
+                ALL ANSWERS INCORRECT
+            </p>
+            <p class="score-message">TRY AGAIN!</p>
+        </div>
+    </div>
 
     <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -556,31 +567,35 @@
                 });
             }
 
-            function showResults() {
-                // Calculate score
-                score = questions.reduce((total, q, i) => {
-                    return total + (userAnswers[i] === q.correct_answer ? 1 : 0);
-                }, 0);
+       function showResults() {
+    // Calculate score
+    score = questions.reduce((total, q, i) => {
+        return total + (userAnswers[i] === q.correct_answer ? 1 : 0);
+    }, 0);
 
-                // Hide quiz page
-                quizPage.classList.add('hidden');
-                
-                // Show appropriate score page with animations
-                if (score === 3) {
-                    perfectScoreContainer.classList.remove('hidden');
-                    createConfetti(perfectScoreContainer, 100, 'gold');
-                    createStars(perfectScoreContainer, 15);
-                } else if (score === 2) {
-                    goodScoreContainer.classList.remove('hidden');
-                    createConfetti(goodScoreContainer, 70, '#FFA500');
-                } else if (score === 1) {
-                    basicScoreContainer.classList.remove('hidden');
-                    createConfetti(basicScoreContainer, 40, '#4CAF50');
-                }
-                
-                // Set timeout to return to lock screen after 7 seconds
-                setTimeout(returnToLockScreen, 7000);
-            }
+    // Hide quiz page
+    quizPage.classList.add('hidden');
+    
+    // Show appropriate score page with animations
+    if (score === 3) {
+        perfectScoreContainer.classList.remove('hidden');
+        createConfetti(perfectScoreContainer, 100, 'gold');
+        createStars(perfectScoreContainer, 15);
+    } else if (score === 2) {
+        goodScoreContainer.classList.remove('hidden');
+        createConfetti(goodScoreContainer, 70, '#FFA500');
+    } else if (score === 1) {
+        basicScoreContainer.classList.remove('hidden');
+        createConfetti(basicScoreContainer, 40, '#4CAF50');
+    } else {
+        // All incorrect case
+        const incorrectScoreContainer = document.getElementById('incorrectScoreContainer');
+        incorrectScoreContainer.classList.remove('hidden');
+    }
+    
+    // Set timeout to return to lock screen after 7 seconds
+    setTimeout(returnToLockScreen, 7000);
+}
 
             function createConfetti(container, amount, color) {
                 const colors = [color, '#fff', color, '#fff', color];

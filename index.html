@@ -6,60 +6,25 @@
   <title>Amante Quiz</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    body,html {
-      margin:0;
-      height:100%;
-      background:black;
-      color:white;
-      text-align:center;
-    }
-    .hidden { display:none; }
-    .fullscreen {
-      height:100%;
-      width:100%;
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      align-items:center;
-      position:fixed;  /* ✅ ensures it covers everything */
-      top:0;
-      left:0;
-      background:black; /* ✅ solid background so quiz never shows through */
-      z-index:10;
-    }
-    .confetti {
-      position:absolute;
-      width:10px;height:10px;
-      background:yellow;
-      animation:fall 4s linear infinite;
-    }
-    @keyframes fall { to { transform:translateY(100vh) rotate(360deg);} }
-    .star {
-      position:absolute;
-      color:gold;
-      animation:twinkle 2s infinite;
-    }
-    @keyframes twinkle { 50%{opacity:0;} }
-    button {
-      padding:15px 25px;
-      font-size:22px;
-      border:none;
-      border-radius:8px;
-      background:#28a745;
-      color:#fff;
-      cursor:pointer;
-    }
+    body,html {margin:0;height:100%;background:black;color:white;text-align:center;}
+    .hidden{display:none;}
+    .fullscreen{height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;}
+    .confetti{position:absolute;width:10px;height:10px;background:yellow;animation:fall 4s linear infinite;}
+    @keyframes fall {to{transform:translateY(100vh) rotate(360deg);}}
+    .star{position:absolute;color:gold;animation:twinkle 2s infinite;}
+    @keyframes twinkle{50%{opacity:0;}}
+    button{padding:15px 25px;font-size:22px;border:none;border-radius:8px;background:#28a745;color:#fff;cursor:pointer;}
   </style>
 </head>
 <body>
   <!-- Lock Screen -->
-  <div id="lockScreen" class="fullscreen" style="z-index:5;">
+  <div id="lockScreen" class="fullscreen">
     <h1>Welcome to Amante Quiz</h1>
     <button id="startBtn">Start</button>
   </div>
 
   <!-- Quiz Page -->
-  <div id="quizPage" class="fullscreen hidden" style="z-index:5;">
+  <div id="quizPage" class="fullscreen hidden">
     <div id="questionContainer">
       <h2 id="questionText"></h2>
       <div id="answerButtons"></div>
@@ -95,7 +60,14 @@
         {question:"What is 2 + 2?",answers:["3","4","5"],correct_answer:"4"}
       ];
 
+      // ✅ Reset all screens
+      function resetScreens(){
+        [quizPage,perfectScoreContainer,goodScoreContainer,basicScoreContainer,incorrectScoreContainer]
+          .forEach(c=>c.classList.add("hidden"));
+      }
+
       startBtn.addEventListener("click",()=>{
+        resetScreens();
         lockScreen.classList.add("hidden");
         quizPage.classList.remove("hidden");
         currentQuestionIndex=0;score=0;userAnswers=[];
@@ -125,8 +97,7 @@
       function showResults(){
         score=questions.reduce((t,q,i)=>t+(userAnswers[i]===q.correct_answer?1:0),0);
 
-        // ✅ Always hide quiz page first
-        quizPage.classList.add("hidden");
+        resetScreens(); // ✅ Always clear quiz/results before showing
 
         if(score===3){
           perfectScoreContainer.classList.remove("hidden");
@@ -143,7 +114,7 @@
           setTimeout(returnToLockScreen,7000);
         } else {
           incorrectScoreContainer.classList.remove("hidden");
-          setTimeout(returnToLockScreen,3000); // ⏳ Try Again only 3s
+          setTimeout(returnToLockScreen,3000);
         }
       }
 
@@ -177,8 +148,7 @@
       }
 
       function returnToLockScreen(){
-        [perfectScoreContainer,goodScoreContainer,basicScoreContainer,incorrectScoreContainer]
-          .forEach(c=>c.classList.add("hidden"));
+        resetScreens();
         lockScreen.classList.remove("hidden");
       }
     });
